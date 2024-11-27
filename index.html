@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <script>
+      function registerUser() {
+        var userName = document.getElementById("registerUserName").value;
+        var userPass = document.getElementById("registerUserPass").value;
+        var userEmail = document.getElementById("registerUserEmail").value;
+        var userPhone = document.getElementById("registerUserPhone").value;
+        if (userName == "" || userPass == "" || userEmail == "" || userPhone == "") {
+          return false;
+        } else {
+          google.script.run.AddRecord(userName, userPass, userEmail, userPhone);
+          document.getElementById("registerForm").style.display = "none";
+          document.getElementById("successForm").style.display = "block";
+        }
+      }
+
+      function loginUser() {
+        var loginName = document.getElementById("loginUserName").value;
+        var loginPass = document.getElementById("loginUserPass").value;
+        google.script.run.withSuccessHandler(function(output) {
+          if (output == 'TRUE') {
+            document.getElementById("displayUserName").innerHTML = loginName;
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("welcomeForm").style.display = "block";
+          } else if (output == 'FALSE') {
+            document.getElementById("errorMessage").innerHTML = "Invalid data";
+          }
+        }).checkLogin(loginName, loginPass);
+      }
+    
+      function showRegisterForm() {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("registerForm").style.display = "block";
+      }
+
+      function showLoginForm() {
+        document.getElementById("successForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+      }
+    </script>
+    <style>
+      body {
+        background-color: #f0f8ff;
+        font-family: Arial, sans-serif;
+      }
+
+      .login-form-container {
+        background: #e0f7fa;
+        border: 2px solid #006064;
+        border-radius: 20px;
+        width: 280px;
+        padding: 20px;
+        margin: 50px auto;
+        box-sizing: border-box;
+      }
+
+      .register-form-container {
+        background: #e0f7fa;
+        border: 2px solid #006064;
+        border-radius: 20px;
+        width: 320px;
+        padding: 20px;
+        margin: 50px auto;
+        box-sizing: border-box;
+      }
+
+      .success-form-container {
+        background: #e0f7fa;
+        border: 2px solid #006064;
+        border-radius: 20px;
+        width: 300px;
+        padding: 20px;
+        margin: 50px auto;
+        box-sizing: border-box;
+      }
+
+      .welcome-form-container {
+        background: #e0f7fa;
+        border: 2px solid #006064;
+        border-radius: 20px;
+        width: 300px;
+        padding: 20px;
+        margin: 50px auto;
+        box-sizing: border-box;
+      }
+
+      input[type=text], input[type=number], input[type=password] {
+        border-top: none;
+        border-right: none;
+        border-left: none;
+        outline: none;
+        text-align: center;
+        font-size: 0.9em;
+        width: 100%;
+        font-weight: bold;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #fff8e1;
+        border-bottom: 2px solid #006064;
+      }
+
+      input[type=submit], input[type=button] {
+        float: right;
+        padding: 5px 10px;
+        font-size: 0.9em;
+        font-weight: bold;
+        background-color: #006064;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      input[type=submit]:hover, input[type=button]:hover {
+        background-color: #004d40;
+      }
+
+      h1, h2 {
+        color: #006064;
+      }
+
+      .user-icon {
+        display: inline-block;
+        width: 75px;
+        height: 75px;
+        border: 8px solid #006064;
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+
+      .user-icon::before {
+        content: '';
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background: #006064;
+        border-radius: 50%;
+        position: absolute;
+        left: calc(50% - 12px);
+        top: 10px;
+      }
+
+      .user-icon::after {
+        content: '';
+        display: inline-block;
+        width: 50px;
+        height: 40px;
+        background: #006064;
+        border-radius: 50%;
+        position: absolute;
+        left: calc(50% - 25px);
+        top: 40px;
+      }
+
+      .error-message {
+        color: red;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <center>
+      <!-- Login Form -->
+      <div style="display: block;" class="login-form-container" id="loginForm"> 
+        <h1>Login Form</h1>
+        <input type="text" id="loginUserName" placeholder="Username" /><br>
+        <input type="password" id="loginUserPass" placeholder="Password" /><br>
+        <span id="errorMessage" class="error-message"></span><br>
+        <input type="submit" value="Login" onclick="loginUser()" /><br><br>
+        <b>If you don't have an account,</b>
+        <input type="button" onClick="showRegisterForm()" value="Create New" />
+      </div>
+
+      <!-- Register Form -->
+      <div style="display: none;" class="register-form-container" id="registerForm">
+        <h1>Create Account</h1>
+        <input type="text" id="registerUserName" placeholder="Username" /><br>
+        <input type="password" id="registerUserPass" placeholder="Create password" /><br>
+        <input type="text" id="registerUserEmail" placeholder="Email" /><br>
+        <input type="number" id="registerUserPhone" placeholder="Phone no." /><br>
+        <b style="color:red;">Password must contain letters and numbers. It will not work without letters and numbers.</b><br><br>
+        <input type="submit" value="Create" onclick="registerUser()" />
+      </div>
+
+      <!-- Success Form -->
+      <div style="display: none;" class="success-form-container" id="successForm">
+        <h2>Your account has been successfully created. Login to your account</h2>
+        <input type="submit" onClick="showLoginForm()" value="Login" />
+      </div>
+
+      <!-- Welcome Form -->
+      <div style="display: none;" class="welcome-form-container" id="welcomeForm">
+        <h2>Hi <b id="displayUserName" style="color:red;"></b>!</h2>
+        <div class="user-icon"></div>
+        <h2>You are successfully logged in.</h2>
+        <h2>**************</h2>
+      </div>
+    </center>
+  </body>
+</html>
